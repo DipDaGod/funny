@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Image Test</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            text-align: center;
+        }
+
+        img {
+            width: 300px;
+            max-width: 100%;
+            border-radius: 12px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 14px 22px;
+            border: none;
+            border-radius: 10px;
+            background: #403a34;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Swarna Dhaaga — SD-02</h2>
+
+    <img
+        id="productImage"
+        src="swarna-dhaaga-02.jpg"
+        alt="Swarna Dhaaga SD-02"
+    >
+
+    <br>
+
+    <button onclick="shareOnWhatsApp()">
+        Enquire on WhatsApp
+    </button>
+
+    <script>
+        async function shareOnWhatsApp() {
+
+            const image = document.getElementById("productImage");
+
+            const response = await fetch(image.src);
+            const blob = await response.blob();
+
+            const file = new File(
+                [blob],
+                "swarna-dhaaga-SD-02.jpg",
+                { type: blob.type }
+            );
+
+            const message =
+                "Hi! I'm interested in Swarna Dhaaga — SD-02. " +
+                "Could you please share the price and availability?";
+
+            // Try native sharing with the actual image
+            if (
+                navigator.share &&
+                navigator.canShare &&
+                navigator.canShare({ files: [file] })
+            ) {
+                await navigator.share({
+                    text: message,
+                    files: [file]
+                });
+
+                return;
+            }
+
+            // Fallback: open WhatsApp with text
+            const whatsappURL =
+                "https://wa.me/919836960841?text=" +
+                encodeURIComponent(message);
+
+            window.location.href = whatsappURL;
+        }
+    </script>
+
+</body>
+</html>
