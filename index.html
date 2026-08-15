@@ -1,118 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>WhatsApp Product Test</title>
+    <title>WhatsApp Image Test</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f7f3ec;
             font-family: Arial, sans-serif;
-            color: #403a34;
-            padding: 20px;
-        }
-
-        .card {
-            width: 100%;
-            max-width: 380px;
-            background: #fffdf9;
-            border: 1px solid #e7ded2;
-            border-radius: 18px;
-            padding: 20px;
+            padding: 30px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(64, 58, 52, 0.08);
         }
 
-        .card img {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
+        img {
+            width: 300px;
+            max-width: 100%;
             border-radius: 12px;
-            display: block;
-        }
-
-        h1 {
-            font-size: 21px;
-            margin: 18px 0 5px;
-        }
-
-        .design {
-            color: #756d63;
-            margin: 0 0 8px;
-        }
-
-        .price {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
         }
 
         button {
-            width: 100%;
+            margin-top: 20px;
+            padding: 14px 22px;
             border: none;
             border-radius: 10px;
-            padding: 14px;
             background: #403a34;
             color: white;
             font-size: 16px;
-            font-weight: 600;
             cursor: pointer;
-        }
-
-        button:hover {
-            opacity: 0.9;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="card">
+    <h2>Swarna Dhaaga — SD-02</h2>
 
-        <img
-            src="funzies.jpeg"
-            alt="Swarna Dhaaga - Design 2"
-        >
+    <img
+        id="productImage"
+        src="funzies.jpeg"
+        alt="Swarna Dhaaga SD-02"
+    >
 
-        <h1>Swarna Dhaaga</h1>
+    <br>
 
-        <p class="design">Design 2</p>
-
-        <div class="price">₹149</div>
-
-        <button onclick="enquireWhatsApp()">
-            Enquire on WhatsApp
-        </button>
-
-    </div>
+    <button onclick="shareOnWhatsApp()">
+        Enquire on WhatsApp
+    </button>
 
     <script>
-        function enquireWhatsApp() {
+        async function shareOnWhatsApp() {
 
-            const phone = "919836960841";
+            const image = document.getElementById("productImage");
 
-            const product = "Swarna Dhaaga";
-            const design = "Design 2";
+            const response = await fetch(image.src);
+            const blob = await response.blob();
+
+            const file = new File(
+                [blob],
+                "swarna-dhaaga-SD-02.jpg",
+                { type: blob.type }
+            );
 
             const message =
-                `Hi! I'm interested in ${product} — ${design}. ` +
-                `Could you please share the price and details?`;
+                "Hi! I'm interested in Swarna Dhaaga — SD-02. " +
+                "Could you please share the price and availability?";
 
-            const url =
-                `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            // Try native sharing with the actual image
+            if (
+                navigator.share &&
+                navigator.canShare &&
+                navigator.canShare({ files: [file] })
+            ) {
+                await navigator.share({
+                    text: message,
+                    files: [file]
+                });
 
-            window.location.href = url;
+                return;
+            }
+
+            // Fallback: open WhatsApp with text
+            const whatsappURL =
+                "https://wa.me/919836960841?text=" +
+                encodeURIComponent(message);
+
+            window.location.href = whatsappURL;
         }
     </script>
 
